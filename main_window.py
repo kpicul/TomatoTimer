@@ -5,11 +5,21 @@ import time
 
 
 class MainWindow(QMainWindow):
+    """Main window class.
+
+    Attributes:
+        timer_text (QLabel): timer display.
+        start_button (QPushButton): start button.
+        interval (int): interval for timer.
+        raw_seconds (int): raw seconds.
+        timer (QTimer): timer.
+        timer_started (bool): indicates if timer is started.
+    """
     def __init__(self):
         super(MainWindow, self).__init__()
         uic.loadUi("ui/mainUi.ui", self)
 
-        self.timerText: QLabel = self.findChild(QLabel, "timeLabel")
+        self.timer_text: QLabel = self.findChild(QLabel, "timeLabel")
         self.start_button: QPushButton = self.findChild(QPushButton, "startButton")
 
         self.interval: int = 25
@@ -17,7 +27,7 @@ class MainWindow(QMainWindow):
         self.timer: QTimer = QTimer()
         self.timer_started: bool = False
 
-        self.timerText.setText("25:00")
+        self.timer_text.setText("25:00")
 
         self.start_button.clicked.connect(self.start_or_pause_timer)
         self.timer.timeout.connect(self.tick)
@@ -25,6 +35,8 @@ class MainWindow(QMainWindow):
         self.show()
 
     def start_or_pause_timer(self):
+        """Starts or pauses timer
+        """
         if not self.timer_started:
             self.timer_started = True
             self.timer.start(1000)
@@ -35,13 +47,15 @@ class MainWindow(QMainWindow):
             self.start_button.setText("START")
 
     def tick(self):
+        """Handles tick event.
+        """
         self.raw_seconds -= 1
         minutes = self.raw_seconds // 60
         seconds = self.raw_seconds % 60
         if seconds > 9:
-            self.timerText.setText(f"{minutes}:{seconds}")
+            self.timer_text.setText(f"{minutes}:{seconds}")
         else:
-            self.timerText.setText(f"{minutes}:0{seconds}")
+            self.timer_text.setText(f"{minutes}:0{seconds}")
 
         if self.raw_seconds == 0:
             self.timer.stop()
